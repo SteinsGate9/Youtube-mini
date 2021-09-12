@@ -9,7 +9,11 @@ The video is stored on local filesystem and the metadata are stored in sqlite. S
 Real-time bullet screen chat is supported by Websocket and Redis. The frontend is written in HTML and JS.
 Reference: https://github.com/Asymptote/asymptote.github.io/wiki/Getting-started-with-nginx-rtmp https://github.com/tabvn/video-streaming-service https://github.com/geekswaroop/YouTube-Clone
 
-
+Some todos & optimizations:
+- The current framework uses websockets for real-time chats which is supported by a
+embedded redis db. This is however not scalable when the QPS goes up. So a better way
+  is to use kafka to push messages to a redis cluster and to poll the redis cluster periodically. This
+  would move the bottleneck to redis cluster.
  ## How to run
 
 
@@ -37,6 +41,11 @@ To install Opencv
 To install Websockets
 1. python -m pip install -U channels
 
+To install Kafka
+1. brew install kafka
+2. pip install --no-binary :all: confluent-kafka
+
 In order to run this project, execute:
 1. python manage.py runserver
 2. open http://127.0.0.1:8000/ on your browser
+3. to further support kafka, start kafka server and create a topic named 'test' to play around

@@ -22,6 +22,7 @@
 		<input id="chat-message-input" type="text" size="100"><br>
 		<input id="chat-message-submit" type="button" value="Send">
 		{{ room_name|json_script:"room-name" }}
+
 		<script>
 			const roomName = "{{ watch_id }}";
 
@@ -33,6 +34,20 @@
 					+ '/'
 			);
 
+			var Redis = require('ioredis');
+			var redis = new Redis();
+
+			var redisLoop = function () {
+				redis.brpoplpush('channel', 'channel-working', 0).then(function (result) {
+					// because we are using BRPOPLPUSH, the client promise will not resolve
+					// until a 'result' becomes available
+					processJob(result);
+
+					// delete the item from the working channel, and check for another item
+					redis.lrem('channel-working', 1, result).then(redisLoop);
+				});
+			};
+			redisLoop();
 
 			chatSocket.onmessage = function(e) {
 				const data = JSON.parse(e.data);
