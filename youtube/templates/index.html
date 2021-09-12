@@ -1,0 +1,45 @@
+{% extends "parent.html" %}
+
+
+	<!-- video_area -->
+	{% block body %}
+	<div class="video_area">
+		<div class="ad_area">
+			<h1>Recent Uploads</h1>
+			<!-- recent videos for each we render a block -->
+			{% for video in most_recent_videos %}
+{#			<div class = "video_advertisement col-md-6" div onclick="location.href='/video/{{ video.id }}/{{ 1 }}/';" style="cursor: pointer;>#}
+			<div class = "video_advertisement col-md-6">
+
+				<div class="video_description" div onclick="location.href='/video/{{ video.id }}/{{ 1 }}/';" style="cursor: pointer;">
+					<img src="{{ video.thumb_path }}" alt="Girl in a jacket" style='height: 100%; width: 100%; object-fit: contain'/>
+				</div>
+				<div class="video_title">
+					<h2 align="center" style="font-family: Courier New">{{ video.title }}</h2>
+				</div>
+{#				<div class="watch_now">#}
+{#				<a href="#" ></a>#}
+{#				<a href="/video/{{ video.id }}/{{ 1 }}/" class="fill-div"></a>#}
+{#				</div>#}
+			</div>
+			{% endfor %}
+
+		</div>
+
+
+	</div>
+
+	<!--<div class="video_area" id = "channels">
+		<div class="ad_area">
+			<h1>Channels</h1>
+			<div class="channel_area">
+				{% for channels in most_recent_channels %}
+				<div>
+					<p><a href="/{{ channels.user.username }}/channel">{{ channels.channel_name }}</a></p>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>-->
+
+	{% endblock %}

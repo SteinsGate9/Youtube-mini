@@ -1,0 +1,68 @@
+{% extends "parent.html" %}
+
+
+{% block body %}
+
+
+	<div class="video_area">
+		<div class="ad_area">
+			<h1>Watch Video Streaming</h1>
+			<video width="352" height="198" controls>
+				<source src="{{ real_url }}" type="application/x-mpegURL">
+			</video>
+		</div>
+
+		{% if owner_id %}
+			<a href="/streaming/close_stream/{{ owner_id }}">Close Streaming</a>
+		{% endif %}
+	</div>
+
+	<div class="video_area" style="margin:0 auto;">
+		<textarea id="chat-log" cols="100" rows="20"></textarea><br>
+		<input id="chat-message-input" type="text" size="100"><br>
+		<input id="chat-message-submit" type="button" value="Send">
+		{{ room_name|json_script:"room-name" }}
+		<script>
+			const roomName = "{{ watch_id }}";
+
+			const chatSocket = new WebSocket(
+					'ws://'
+					+ window.location.host
+					+ '/ws/chat/'
+					+ roomName
+					+ '/'
+			);
+
+
+			chatSocket.onmessage = function(e) {
+				const data = JSON.parse(e.data);
+				document.querySelector('#chat-log').value += (data.message + '\n');
+			};
+
+			chatSocket.onclose = function(e) {
+				console.error('Chat socket closed unexpectedly');
+			};
+
+			document.querySelector('#chat-message-input').focus();
+			document.querySelector('#chat-message-input').onkeyup = function(e) {
+				if (e.keyCode === 13) {  // enter, return
+					document.querySelector('#chat-message-submit').click();
+				}
+			};
+
+			document.querySelector('#chat-message-submit').onclick = function(e) {
+				const messageInputDom = document.querySelector('#chat-message-input');
+				const message = messageInputDom.value;
+				console.log(roomName + "send");
+				chatSocket.send(JSON.stringify({
+					'message': message
+				}));
+				messageInputDom.value = '';
+			};
+		</script>
+	</div>
+
+
+
+
+{% endblock %}
